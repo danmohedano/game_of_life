@@ -42,6 +42,7 @@ class Board:
                     self.next[i][ii] = DEAD
 
         self.iteration += 1
+        print('Iteration: ', self.iteration, '...')
 
     def neighbours(self, x, y):
         """
@@ -78,7 +79,20 @@ class Board:
         :return:
         """
         if source is None:
+            # Generate random noise
             for i in range(self.size):
                 for ii in range(self.size):
                     self.current[i][ii] = random.randint(DEAD, ALIVE)
                     self.next[i][ii] = self.current[i][ii]
+        else:
+            # Load from file
+            f = open(source, "r")
+            file_data = f.read()
+            x = 0
+            for line in file_data.split("\n"):
+                y = 0
+                for element in line.split(" "):
+                    self.current[x][y] = int(element)
+                    self.next[x][y] = self.current[x][y]
+                    y += 1
+                x += 1
