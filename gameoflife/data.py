@@ -1,14 +1,10 @@
 import numpy as np
 import pygame
 import random
+from .constants import ALIVE, DEAD, BLACK, WHITE, SQUARE_SIZE
 
 
 class Board:
-    ALIVE = 1
-    DEAD = 0
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-
     def __init__(self, size=150):
         """
         Constructor method for the board
@@ -37,13 +33,13 @@ class Board:
                 field_sum = self.neighbours(i, ii)
                 if field_sum == 3:
                     # Set cell as alive
-                    self.next[i][ii] = self.ALIVE
+                    self.next[i][ii] = ALIVE
                 elif field_sum == 4:
                     # Retain state of cell
                     self.next[i][ii] = self.current[i][ii]
                 else:
                     # Set cell as dead
-                    self.next[i][ii] = self.DEAD
+                    self.next[i][ii] = DEAD
 
         self.iteration += 1
 
@@ -55,8 +51,8 @@ class Board:
         :return: sum of 9 cell field
         """
         field = 0
-        for i in range(max(0, x-1), min(self.size, x+2)):
-            for ii in range(max(0, y-1), min(self.size, y+2)):
+        for i in range(max(0, x - 1), min(self.size, x + 2)):
+            for ii in range(max(0, y - 1), min(self.size, y + 2)):
                 field += self.current[i][ii]
 
         return field
@@ -66,14 +62,14 @@ class Board:
         Displays the next board state
         :return: None
         """
-        screen.fill(self.BLACK)
+        screen.fill(BLACK)
         for i in range(self.size):
             for ii in range(self.size):
-                if self.next[i][ii] == self.ALIVE:
-                    pygame.draw.rect(screen, self.WHITE, (ii*self.SQUARE_SIZE,
-                                                          i*self.SQUARE_SIZE,
-                                                          self.SQUARE_SIZE,
-                                                          self.SQUARE_SIZE))
+                if self.next[i][ii] == ALIVE:
+                    pygame.draw.rect(screen, WHITE, (ii * self.SQUARE_SIZE,
+                                                     i * self.SQUARE_SIZE,
+                                                     SQUARE_SIZE,
+                                                     SQUARE_SIZE))
 
     def load(self, source=None):
         """
@@ -84,5 +80,5 @@ class Board:
         if source is None:
             for i in range(self.size):
                 for ii in range(self.size):
-                    self.current[i][ii] = random.randint(self.DEAD, self.ALIVE)
+                    self.current[i][ii] = random.randint(DEAD, ALIVE)
                     self.next[i][ii] = self.current[i][ii]
