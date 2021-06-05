@@ -1,7 +1,7 @@
 import numpy as np
 import pygame
 import random
-from .constants import ALIVE, DEAD, BLACK, WHITE, SQUARE_SIZE
+from .constants import ALIVE, DEAD, BLACK, WHITE
 
 
 class Board:
@@ -69,8 +69,8 @@ class Board:
                 if self.next[i][ii] == ALIVE:
                     pygame.draw.rect(screen, WHITE, (ii * self.SQUARE_SIZE,
                                                      i * self.SQUARE_SIZE,
-                                                     SQUARE_SIZE,
-                                                     SQUARE_SIZE))
+                                                     self.SQUARE_SIZE,
+                                                     self.SQUARE_SIZE))
 
     def load(self, source=None):
         """

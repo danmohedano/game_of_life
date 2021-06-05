@@ -1,5 +1,6 @@
-from gameoflife import Board
-from gameoflife.constants import SIZE, FILE, SCR_DELAY
+from data import Board
+from data.constants import SIZE
+from config import FILE, DELAY, SCR_WIDTH, SCR_HEIGHT
 import pygame
 from pygame.locals import *
 import time
@@ -9,7 +10,7 @@ def main():
     # Initialization
     pygame.init()
     board = Board(SIZE)
-    screen = pygame.display.set_mode((640, 640))
+    screen = pygame.display.set_mode((SCR_WIDTH, SCR_HEIGHT))
     pygame.display.set_caption('Game of Life')
 
     # Load the board
@@ -30,7 +31,7 @@ def main():
         board.display(screen)
 
         pygame.display.update()
-        pygame.time.delay(SCR_DELAY)
+        pygame.time.delay(DELAY)
 
     pygame.quit()
 
