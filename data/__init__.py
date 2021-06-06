@@ -1,1 +1,2 @@
-from .data import Board
+from .data import *
+from .constants import *
