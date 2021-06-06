@@ -1,7 +1,7 @@
 import threading
 import pygame
 from data import Board, ALIVE, DEAD
-from .constants import BLACK, WHITE
+from .constants import CELL_COLOR, GRID_COLOR
 from config import DEBUG
 
 
@@ -21,13 +21,13 @@ class Camera:
 
         # Calculate values for display
         self.screen_width, self.screen_height = self.screen.get_size()
-        self.square_size = min(self.screen_width//self.board.sizeX,
-                               self.screen_height//self.board.sizeY)
+        self.square_size = min(self.screen_width / self.board.sizeX,
+                               self.screen_height / self.board.sizeY)
 
         # Initiliaze config variables of the camera
         self.zoom = 1.0
-        self.offsetX = 0
-        self.offsetY = 0
+        self.offsetX = 0.0
+        self.offsetY = 0.0
         self.config_lock = threading.Semaphore()
 
         if DEBUG:
@@ -39,13 +39,13 @@ class Camera:
         """
         for x in range(self.board.sizeX):
             for y in range(self.board.sizeY):
-                if self.board.next[x][y] == ALIVE:
-                    self.screen.fill(WHITE, (y * self.square_size,
-                                             x * self.square_size,
-                                             self.square_size,
-                                             self.square_size))
-                else:
-                    self.screen.fill(BLACK, (y * self.square_size,
-                                             x * self.square_size,
-                                             self.square_size,
-                                             self.square_size))
+                # TODO: display only viewed cells for performance increase
+                self.screen.fill(GRID_COLOR, (y * self.square_size * self.zoom + self.offsetY,
+                                              x * self.square_size * self.zoom + self.offsetX,
+                                              self.square_size * self.zoom,
+                                              self.square_size * self.zoom))
+                self.screen.fill(CELL_COLOR[int(self.board.next[x][y])],
+                                 (y * self.square_size * self.zoom + 1 + self.offsetY,
+                                  x * self.square_size * self.zoom + 1 + self.offsetX,
+                                  self.square_size * self.zoom - 2,
+                                  self.square_size * self.zoom - 2))
