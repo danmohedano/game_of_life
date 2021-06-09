@@ -1,36 +1,67 @@
-from gameoflife import Board
-from gameoflife.constants import SIZE, FILE, SCR_DELAY
+from data import Board
+from camera import Camera
+from config import *
 import pygame
 from pygame.locals import *
 import time
+import threading
+
+
+def game_loop(board: Board, camera: Camera):
+    board.iterate()
+    camera.display()
+
+    pygame.display.update()
+
+
+def input(camera: Camera):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            # Close command
+            return False
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        # Move camera to the left
+        camera.move(SCR_WIDTH//10, 0)
+    if keys[pygame.K_RIGHT]:
+        # Move camera to the right
+        camera.move(-SCR_WIDTH // 10, 0)
+    if keys[pygame.K_UP]:
+        # Move camera up
+        camera.move(0, SCR_HEIGHT // 10)
+    if keys[pygame.K_DOWN]:
+        # Move camera down
+        camera.move(0, -SCR_HEIGHT // 10)
+    if keys[pygame.K_PAGEUP]:
+        # More zoom
+        camera.zoom_update(0.25)
+    if keys[pygame.K_PAGEDOWN]:
+        # Less zoom
+        camera.zoom_update(-0.25)
+    return True
 
 
 def main():
     # Initialization
     pygame.init()
-    board = Board(SIZE)
-    screen = pygame.display.set_mode((640, 640))
+    board = Board(GRID_SIZE, GRID_SIZE)
+    screen = pygame.display.set_mode((SCR_WIDTH, SCR_HEIGHT))
+    camera = Camera(board, screen)
     pygame.display.set_caption('Game of Life')
+    run_flag = True
 
     # Load the board
     board.load(FILE)
 
     # Show initial state
-    board.display(screen)
+    camera.display()
     time.sleep(1)
 
     # Game loop
-    run = True
-    while run:
-        for event in pygame.event.get():
-            if event.type in (QUIT, KEYDOWN):
-                run = False
-
-        board.iterate()
-        board.display(screen)
-
-        pygame.display.update()
-        pygame.time.delay(SCR_DELAY)
+    while run_flag:
+        run_flag = input(camera)
+        game_loop(board, camera)
 
     pygame.quit()
 

@@ -1,21 +1,26 @@
+import threading
 import numpy as np
 import pygame
 import random
-from .constants import ALIVE, DEAD, BLACK, WHITE, SQUARE_SIZE
+from .constants import ALIVE, DEAD
+from config import DEBUG
 
 
 class Board:
-    def __init__(self, size=150):
+    def __init__(self, size_x: int, size_y: int):
         """
         Constructor method for the board
-        :param size: size of the board (default = 150)
+        :param size_x: width of the board
+        :param size_y: height of the board
         """
-        self.size = size
-        self.current = np.zeros((size, size))
-        self.next = np.zeros((size, size))
-        self.iteration = 1
-        self.SQUARE_SIZE = 640 // size
-        print("Board created for size ", self.size)
+        self.sizeX = size_x
+        self.sizeY = size_y
+        self.current = np.zeros((size_x, size_y))
+        self.next = np.zeros((size_x, size_y))
+        self.iteration = 0
+
+        if DEBUG:
+            print("Initialized board [size=({},{})] ".format(self.sizeX, self.sizeY))
 
     def iterate(self):
         """
@@ -28,8 +33,8 @@ class Board:
         self.current, self.next = self.next, self.current
 
         # Calculate new state for every cell
-        for i in range(self.size):
-            for ii in range(self.size):
+        for i in range(self.sizeX):
+            for ii in range(self.sizeY):
                 field_sum = self.neighbours(i, ii)
                 if field_sum == 3:
                     # Set cell as alive
@@ -42,7 +47,8 @@ class Board:
                     self.next[i][ii] = DEAD
 
         self.iteration += 1
-        print('Iteration: ', self.iteration, '...')
+        if DEBUG:
+            print('Iteration: ', self.iteration, '...')
 
     def neighbours(self, x, y):
         """
@@ -52,25 +58,11 @@ class Board:
         :return: sum of 9 cell field
         """
         field = 0
-        for i in range(max(0, x - 1), min(self.size, x + 2)):
-            for ii in range(max(0, y - 1), min(self.size, y + 2)):
+        for i in range(max(0, x - 1), min(self.sizeX, x + 2)):
+            for ii in range(max(0, y - 1), min(self.sizeY, y + 2)):
                 field += self.current[i][ii]
 
         return field
-
-    def display(self, screen):
-        """
-        Displays the next board state
-        :return: None
-        """
-        screen.fill(BLACK)
-        for i in range(self.size):
-            for ii in range(self.size):
-                if self.next[i][ii] == ALIVE:
-                    pygame.draw.rect(screen, WHITE, (ii * self.SQUARE_SIZE,
-                                                     i * self.SQUARE_SIZE,
-                                                     SQUARE_SIZE,
-                                                     SQUARE_SIZE))
 
     def load(self, source=None):
         """
@@ -80,8 +72,8 @@ class Board:
         """
         if source is None:
             # Generate random noise
-            for i in range(self.size):
-                for ii in range(self.size):
+            for i in range(self.sizeX):
+                for ii in range(self.sizeY):
                     self.current[i][ii] = random.randint(DEAD, ALIVE)
                     self.next[i][ii] = self.current[i][ii]
         else:
