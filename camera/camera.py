@@ -1,6 +1,6 @@
 import threading
 import pygame
-from data import Board, ALIVE, DEAD
+from data import Board
 from .constants import CELL_COLOR, GRID_COLOR
 from config import DEBUG
 
@@ -28,7 +28,7 @@ class Camera:
         self.zoom = 1.0
         self.offsetX = 0.0
         self.offsetY = 0.0
-        self.config_lock = threading.Semaphore()
+        # self.config_lock = threading.Semaphore()
 
         if DEBUG:
             print("Initialized camera")
@@ -37,6 +37,8 @@ class Camera:
         """
         Displays the current board state
         """
+        # with self.config_lock:
+        self.screen.fill(CELL_COLOR[0])
         for x in range(self.board.sizeX):
             for y in range(self.board.sizeY):
                 # TODO: display only viewed cells for performance increase
@@ -49,3 +51,21 @@ class Camera:
                                   x * self.square_size * self.zoom + 1 + self.offsetX,
                                   self.square_size * self.zoom - 2,
                                   self.square_size * self.zoom - 2))
+
+    def move(self, move_horizontal=0, move_vertical=0):
+        """
+        Move the camera
+        :param move_horizontal: if want to move the camera horizontally
+        :param move_vertical: if want to move the camera vertically
+        """
+        self.offsetX += move_vertical
+        self.offsetY += move_horizontal
+
+    def zoom_update(self, zoom_increment=0):
+        """
+        Update the zoom of the camera
+        :param zoom_increment: increment to the current zoom
+        """
+        self.zoom += zoom_increment
+        if self.zoom < 0:
+            self.zoom = 0
