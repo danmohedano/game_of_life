@@ -6,15 +6,22 @@ from pygame.locals import *
 import time
 import threading
 
+# Constants for game loop
+STOP = 0
+PAUSE_RESUME = -1
+CONTINUE = 1
 
-def game_loop(board: Board, camera: Camera):
+
+def game_loop(board: Board, camera: Camera, run_flag: int):
     """
     Manage game loop
-    :param board:
-    :param camera:
+    :param board: Board to display
+    :param camera: Camera to display the board
+    :param run_flag: Flag with the state of the execution
     :return:
     """
-    board.iterate()
+    if run_flag > 0:
+        board.iterate()
     camera.display()
 
     pygame.display.update()
@@ -26,10 +33,12 @@ def input(camera: Camera):
     :param camera:
     :return:
     """
+    out = CONTINUE
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             # Close command
-            return False
+            return STOP
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 # Move camera to the left
@@ -49,8 +58,11 @@ def input(camera: Camera):
             elif event.key == pygame.K_PAGEDOWN:
                 # Less zoom
                 camera.zoom_update(-0.25)
+            elif event.key == pygame.K_SPACE:
+                # Pause/resume
+                out = PAUSE_RESUME
 
-    return True
+    return out
 
 
 def main():
@@ -60,7 +72,7 @@ def main():
     screen = pygame.display.set_mode((SCR_WIDTH, SCR_HEIGHT))
     camera = Camera(board, screen)
     pygame.display.set_caption('Game of Life')
-    run_flag = True
+    run_flag = CONTINUE
 
     # Load the board
     board.load(FILE)
@@ -70,9 +82,9 @@ def main():
     time.sleep(1)
 
     # Game loop
-    while run_flag:
-        run_flag = input(camera)
-        game_loop(board, camera)
+    while run_flag != STOP:
+        run_flag *= input(camera)
+        game_loop(board, camera, run_flag)
 
     pygame.quit()
 
