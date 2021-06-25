@@ -8,6 +8,12 @@ import threading
 
 
 def game_loop(board: Board, camera: Camera):
+    """
+    Manage game loop
+    :param board:
+    :param camera:
+    :return:
+    """
     board.iterate()
     camera.display()
 
@@ -15,30 +21,35 @@ def game_loop(board: Board, camera: Camera):
 
 
 def input(camera: Camera):
+    """
+    Manage user inputs
+    :param camera:
+    :return:
+    """
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             # Close command
             return False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                # Move camera to the left
+                camera.move(SCR_WIDTH // 10, 0)
+            elif event.key == pygame.K_RIGHT:
+                # Move camera to the right
+                camera.move(-SCR_WIDTH // 10, 0)
+            elif event.key == pygame.K_UP:
+                # Move camera up
+                camera.move(0, SCR_HEIGHT // 10)
+            elif event.key == pygame.K_DOWN:
+                # Move camera down
+                camera.move(0, -SCR_HEIGHT // 10)
+            elif event.key == pygame.K_PAGEUP:
+                # More zoom
+                camera.zoom_update(0.25)
+            elif event.key == pygame.K_PAGEDOWN:
+                # Less zoom
+                camera.zoom_update(-0.25)
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        # Move camera to the left
-        camera.move(SCR_WIDTH//10, 0)
-    if keys[pygame.K_RIGHT]:
-        # Move camera to the right
-        camera.move(-SCR_WIDTH // 10, 0)
-    if keys[pygame.K_UP]:
-        # Move camera up
-        camera.move(0, SCR_HEIGHT // 10)
-    if keys[pygame.K_DOWN]:
-        # Move camera down
-        camera.move(0, -SCR_HEIGHT // 10)
-    if keys[pygame.K_PAGEUP]:
-        # More zoom
-        camera.zoom_update(0.25)
-    if keys[pygame.K_PAGEDOWN]:
-        # Less zoom
-        camera.zoom_update(-0.25)
     return True
 
 
