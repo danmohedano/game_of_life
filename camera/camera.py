@@ -42,13 +42,13 @@ class Camera:
         for x in range(self.board.sizeX):
             for y in range(self.board.sizeY):
                 # TODO: display only viewed cells for performance increase
-                self.screen.fill(GRID_COLOR, (y * self.square_size * self.zoom + self.offsetY,
-                                              x * self.square_size * self.zoom + self.offsetX,
+                self.screen.fill(GRID_COLOR, (x * self.square_size * self.zoom + self.offsetX,
+                                              y * self.square_size * self.zoom + self.offsetY,
                                               self.square_size * self.zoom,
                                               self.square_size * self.zoom))
                 self.screen.fill(CELL_COLOR[int(self.board.next[x][y])],
-                                 (y * self.square_size * self.zoom + 1 + self.offsetY,
-                                  x * self.square_size * self.zoom + 1 + self.offsetX,
+                                 (x * self.square_size * self.zoom + 1 + self.offsetX,
+                                  y * self.square_size * self.zoom + 1 + self.offsetY,
                                   self.square_size * self.zoom - 2,
                                   self.square_size * self.zoom - 2))
 
@@ -58,8 +58,8 @@ class Camera:
         :param move_horizontal: if want to move the camera horizontally
         :param move_vertical: if want to move the camera vertically
         """
-        self.offsetX += move_vertical
-        self.offsetY += move_horizontal
+        self.offsetX += move_horizontal
+        self.offsetY += move_vertical
 
     def zoom_update(self, zoom_increment=0):
         """
@@ -69,3 +69,14 @@ class Camera:
         self.zoom += zoom_increment
         if self.zoom < 0:
             self.zoom = 0
+
+    def activate(self, mouse_x: int, mouse_y: int):
+        """
+        Processes the mouse input to activate a cell manually
+        :param mouse_x: x position of the mouse pointer on click
+        :param mouse_y: y position of the mouse pointer on click
+        """
+        x_index = int((mouse_x - self.offsetX) // (self.square_size * self.zoom))
+        y_index = int((mouse_y - self.offsetY) // (self.square_size * self.zoom))
+        if x_index < self.board.sizeX and y_index < self.board.sizeY:
+            self.board.next[x_index][y_index] = (self.board.next[x_index][y_index] + 1) % 2
