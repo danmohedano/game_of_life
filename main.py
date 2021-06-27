@@ -61,6 +61,13 @@ def input(camera: Camera):
             elif event.key == pygame.K_SPACE:
                 # Pause/resume
                 out = PAUSE_RESUME
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            pressed = pygame.mouse.get_pressed(3)
+            if pressed[0]:
+                if DEBUG:
+                    print('Clicked at coordinates', pygame.mouse.get_pos())
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                camera.activate(mouse_x, mouse_y)
 
     return out
 
@@ -69,10 +76,11 @@ def main():
     # Initialization
     pygame.init()
     board = Board(GRID_SIZE, GRID_SIZE)
+
     screen = pygame.display.set_mode((SCR_WIDTH, SCR_HEIGHT))
     camera = Camera(board, screen)
     pygame.display.set_caption('Game of Life')
-    run_flag = CONTINUE
+    run_flag = PAUSE_RESUME
 
     # Load the board
     board.load(FILE)
