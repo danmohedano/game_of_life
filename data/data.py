@@ -15,8 +15,8 @@ class Board:
         """
         self.sizeX = size_x
         self.sizeY = size_y
-        self.current = np.zeros((size_x, size_y))
-        self.next = np.zeros((size_x, size_y))
+        self.current = np.zeros((size_y, size_x))
+        self.next = np.zeros((size_y, size_x))
         self.iteration = 0
 
         if DEBUG:
@@ -33,8 +33,8 @@ class Board:
         self.current, self.next = self.next, self.current
 
         # Calculate new state for every cell
-        for i in range(self.sizeX):
-            for ii in range(self.sizeY):
+        for i in range(self.sizeY):
+            for ii in range(self.sizeX):
                 field_sum = self.neighbours(i, ii)
                 if field_sum == 3:
                     # Set cell as alive
@@ -72,19 +72,19 @@ class Board:
         """
         if source is None:
             # Generate random noise
-            for i in range(self.sizeX):
-                for ii in range(self.sizeY):
+            for i in range(self.sizeY):
+                for ii in range(self.sizeX):
                     self.current[i][ii] = random.randint(DEAD, ALIVE)
                     self.next[i][ii] = self.current[i][ii]
         else:
             # Load from file
             f = open(source, "r")
             file_data = f.read()
-            x = 0
+            y = 0
             for line in file_data.split("\n"):
-                y = 0
+                x = 0
                 for element in line.split(" "):
                     self.current[x][y] = int(element)
                     self.next[x][y] = self.current[x][y]
-                    y += 1
-                x += 1
+                    x += 1
+                y += 1
