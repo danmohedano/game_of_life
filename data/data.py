@@ -8,10 +8,11 @@ from config import DEBUG
 
 class Board:
     def __init__(self, size_x: int, size_y: int):
-        """
-        Constructor method for the board
-        :param size_x: width of the board
-        :param size_y: height of the board
+        """Constructor method for the board.
+
+        Args:
+            size_x (int): Width of the board
+            size_y (int): Height of the board
         """
         self.sizeX = size_x
         self.sizeY = size_y
@@ -20,14 +21,12 @@ class Board:
         self.iteration = 0
 
         if DEBUG:
-            print("Initialized board [size=({},{})] ".format(self.sizeX, self.sizeY))
+            print(f"Initialized board [size=({self.sizeX},{self.sizeY})]") 
 
     def iterate(self):
-        """
-        Calculates an iteration for the board:
-        1. Swaps the boards
-        2. Calculates new state in 'next' board
-        :return: None
+        """Calculates an iteration for the board
+
+        It first swaps the boards and calculates the new next board.
         """
         # Swap the boards
         self.current, self.next = self.next, self.current
@@ -50,12 +49,16 @@ class Board:
         if DEBUG:
             print('Iteration: ', self.iteration, '...')
 
-    def neighbours(self, x, y):
-        """
-        Calculates the addition of the 9 cell field centered in (x,y)
-        :param x: x coordinate
-        :param y: y coordinate
-        :return: sum of 9 cell field
+    def neighbours(self, x: int, y: int) -> int:
+        """Counts the number of neighbours of the cell positioned in (x,y)
+
+        Args:
+            x (int): X coordinate
+            y (int): Y coordinate
+        
+        Returns:
+            int: 
+                Number of neighbours.
         """
         field = 0
         for i in range(max(0, x - 1), min(self.sizeX, x + 2)):
@@ -64,11 +67,11 @@ class Board:
 
         return field
 
-    def load(self, source=None):
-        """
-        Load original board
-        :param source: the source
-        :return:
+    def load(self, source: str = None):
+        """Load original board
+        
+        Args:
+            source (str): File name for the source)
         """
         if source is None:
             # Generate random noise

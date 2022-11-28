@@ -7,6 +7,6 @@ DELAY = 50
 GRID_SIZE = 50
 
 # Load constants
-FILE = 'test.dat'
+FILE = None
 
 DEBUG = True

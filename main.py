@@ -4,7 +4,6 @@ from config import *
 import pygame
 from pygame.locals import *
 import time
-import threading
 
 # Constants for game loop
 STOP = 0
@@ -13,12 +12,12 @@ CONTINUE = 1
 
 
 def game_loop(board: Board, camera: Camera, run_flag: int):
-    """
-    Manage game loop
-    :param board: Board to display
-    :param camera: Camera to display the board
-    :param run_flag: Flag with the state of the execution
-    :return:
+    """Manage game loop.
+
+    Args:
+        board (Board): Board to display
+        camera (Camera): Camera to display the board
+        run_flag (int): Flag with the state of the execution
     """
     if run_flag > 0:
         board.iterate()
@@ -28,10 +27,10 @@ def game_loop(board: Board, camera: Camera, run_flag: int):
 
 
 def input(camera: Camera):
-    """
-    Manage user inputs
-    :param camera:
-    :return:
+    """Manage user inputs.
+    
+    Args:
+        camera (Camera): The camera to display the board
     """
     out = CONTINUE
 
@@ -52,10 +51,10 @@ def input(camera: Camera):
             elif event.key == pygame.K_DOWN:
                 # Move camera down
                 camera.move(0, -SCR_HEIGHT // 10)
-            elif event.key == pygame.K_PAGEUP:
+            elif event.key == pygame.K_z:
                 # More zoom
                 camera.zoom_update(0.25)
-            elif event.key == pygame.K_PAGEDOWN:
+            elif event.key == pygame.K_x:
                 # Less zoom
                 camera.zoom_update(-0.25)
             elif event.key == pygame.K_SPACE:
