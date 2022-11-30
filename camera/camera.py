@@ -1,4 +1,3 @@
-import threading
 import pygame
 from data import Board
 from .constants import CELL_COLOR, GRID_COLOR
@@ -11,10 +10,11 @@ class Camera:
     """
 
     def __init__(self, board: Board, screen: pygame.Surface):
-        """
-        Constructor method for the camera
-        :param board: board to display
-        :param screen: screen where to display the board
+        """Constructor method for the camera
+        
+        Args:
+            board (Board): Board to display
+            screen (pygame.Surface): Screen where to display the board
         """
         self.board = board
         self.screen = screen
@@ -34,14 +34,18 @@ class Camera:
             print("Initialized camera")
 
     def display(self):
-        """
-        Displays the current board state
-        """
-        # with self.config_lock:
+        """Displays the current board state"""
         self.screen.fill(CELL_COLOR[0])
-        for x in range(self.board.sizeX):
-            for y in range(self.board.sizeY):
-                # TODO: display only viewed cells for performance increase
+
+        # Calculate which cells are visible with the current state of the camera
+        min_i = max(0, (int)((-1) * self.offsetX / (self.square_size * self.zoom))) 
+        max_i = min(self.board.sizeX, (int)((self.screen_width - self.offsetX) / (self.square_size * self.zoom) + 1)) 
+        min_j = max(0, (int)((-1) * self.offsetY / (self.square_size * self.zoom))) 
+        max_j = min(self.board.sizeX, (int)((self.screen_height - self.offsetY) / (self.square_size * self.zoom) + 1)) 
+
+        # Only display visible cells
+        for x in range(min_i, max_i):
+            for y in range(min_j, max_j):
                 self.screen.fill(GRID_COLOR, (x * self.square_size * self.zoom + self.offsetX,
                                               y * self.square_size * self.zoom + self.offsetY,
                                               self.square_size * self.zoom,
@@ -52,29 +56,32 @@ class Camera:
                                   self.square_size * self.zoom - 2,
                                   self.square_size * self.zoom - 2))
 
-    def move(self, move_horizontal=0, move_vertical=0):
-        """
-        Move the camera
-        :param move_horizontal: if want to move the camera horizontally
-        :param move_vertical: if want to move the camera vertically
+    def move(self, move_horizontal: int = 0, move_vertical: int = 0):
+        """Move the camera
+        
+        Args:
+            move_horizontal (int): if want to move the camera horizontally
+            move_vertical (int): if want to move the camera vertically
         """
         self.offsetX += move_horizontal
         self.offsetY += move_vertical
 
-    def zoom_update(self, zoom_increment=0):
-        """
-        Update the zoom of the camera
-        :param zoom_increment: increment to the current zoom
+    def zoom_update(self, zoom_increment: int = 0):
+        """Update the zoom of the camera
+
+        Args:
+            zoom_increment (int): increment to the current zoom
         """
         self.zoom += zoom_increment
         if self.zoom < 0:
             self.zoom = 0
 
     def activate(self, mouse_x: int, mouse_y: int):
-        """
-        Processes the mouse input to activate a cell manually
-        :param mouse_x: x position of the mouse pointer on click
-        :param mouse_y: y position of the mouse pointer on click
+        """Processes the mouse input to activate a cell manually
+
+        Args:
+            mouse_x (int): x position of the mouse pointer on click
+            mouse_y (int): y position of the mouse pointer on click
         """
         x_index = int((mouse_x - self.offsetX) // (self.square_size * self.zoom))
         y_index = int((mouse_y - self.offsetY) // (self.square_size * self.zoom))
