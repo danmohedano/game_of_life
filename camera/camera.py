@@ -36,9 +36,16 @@ class Camera:
     def display(self):
         """Displays the current board state"""
         self.screen.fill(CELL_COLOR[0])
-        for x in range(self.board.sizeX):
-            for y in range(self.board.sizeY):
-                # TODO: display only viewed cells for performance increase
+
+        # Calculate which cells are visible with the current state of the camera
+        min_i = max(0, (int)((-1) * self.offsetX / (self.square_size * self.zoom))) 
+        max_i = min(self.board.sizeX, (int)((self.screen_width - self.offsetX) / (self.square_size * self.zoom) + 1)) 
+        min_j = max(0, (int)((-1) * self.offsetY / (self.square_size * self.zoom))) 
+        max_j = min(self.board.sizeX, (int)((self.screen_height - self.offsetY) / (self.square_size * self.zoom) + 1)) 
+
+        # Only display visible cells
+        for x in range(min_i, max_i):
+            for y in range(min_j, max_j):
                 self.screen.fill(GRID_COLOR, (x * self.square_size * self.zoom + self.offsetX,
                                               y * self.square_size * self.zoom + self.offsetY,
                                               self.square_size * self.zoom,
