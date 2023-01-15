@@ -77,4 +77,4 @@ If you have ideas on how to improve the project, go ahead!
 
 ## License
 
-Distributed under the [license_name](https://github.com/danmohedano/game_of_life/blob/main/LICENSE) license © [danmohedano](https://github.com/danmohedano)
+Distributed under the [MIT](https://github.com/danmohedano/game_of_life/blob/main/LICENSE) license © [danmohedano](https://github.com/danmohedano)
